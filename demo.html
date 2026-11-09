@@ -1,0 +1,1168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Engineer Ismail Cards - Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <style>
+      :root {
+        --ui: #1f1a17;
+        --ui2: #2e2723;
+        --uitx: #f4ece4;
+        --uimut: #b3a499;
+        --acc: #c79478;
+        --page: #efe9e2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+      body {
+        background: var(--ui);
+        color: var(--uitx);
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+      .bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        border-bottom: 1px solid #3a322d;
+      }
+      .bar h1 {
+        font-size: 15px;
+        margin: 0 8px 0 0;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      .bar h1 small {
+        color: var(--uimut);
+        font-weight: 500;
+        margin-left: 6px;
+      }
+      .seg {
+        display: inline-flex;
+        background: var(--ui2);
+        border-radius: 999px;
+        padding: 3px;
+        gap: 2px;
+      }
+      .seg button,
+      .btn {
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--uimut);
+        background: none;
+        border: 0;
+        padding: 7px 13px;
+        border-radius: 999px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .seg button.on {
+        background: var(--acc);
+        color: #fff;
+      }
+      .btn {
+        background: var(--ui2);
+      }
+      .btn.on {
+        background: var(--acc);
+        color: #fff;
+      }
+      select {
+        font: inherit;
+        font-size: 13px;
+        background: var(--ui2);
+        color: var(--uitx);
+        border: 0;
+        border-radius: 999px;
+        padding: 7px 12px;
+      }
+      .sp {
+        flex: 1;
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--uimut);
+      }
+      .stage {
+        flex: 1;
+        overflow: auto;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 18px;
+      }
+      .box {
+        position: relative;
+        flex: none;
+      }
+      .frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: var(--page);
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 30px 80px -30px #000;
+        transform-origin: top left;
+        border: 10px solid #0d0b0a;
+        position: relative;
+      }
+      .frame.phone {
+        border-radius: 44px;
+        border-width: 12px;
+      }
+      .frame.tv {
+        border-radius: 14px;
+        border-width: 14px;
+      }
+      .screen {
+        height: 100%;
+        overflow: auto;
+        background: var(--lovelace-background, var(--primary-background-color, var(--page)));
+        transition: background 0.4s;
+      }
+      .hahead {
+        height: 56px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 18px;
+        background: var(--app-header-background-color, #2b211c);
+        color: var(--app-header-text-color, #f4e7dc);
+        border-bottom: var(--app-header-border-bottom, none);
+        font-size: 19px;
+        font-family: Roboto, system-ui, sans-serif;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
+      .hahead i {
+        font-size: 22px;
+        opacity: 0.85;
+      }
+      .view {
+        display: grid;
+        gap: 18px;
+        padding: 18px;
+        align-items: start;
+      }
+      .section {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 10px;
+        align-content: start;
+        min-height: 60px;
+        border-radius: 18px;
+        transition: background 0.2s;
+      }
+      .section h2 {
+        grid-column: 1/-1;
+        margin: 2px 4px 0;
+        font-size: 17px;
+        font-weight: 600;
+        font-family: inherit;
+        color: var(--primary-text-color, #3d342e);
+      }
+      .section.full {
+        grid-column: 1/-1;
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translate(-50%, 20px);
+        opacity: 0;
+        background: #111;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 9px 16px;
+        border-radius: 999px;
+        transition: 0.25s;
+        pointer-events: none;
+        z-index: 60;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+      .section.drop {
+        background: rgba(199, 148, 120, 0.18);
+        outline: 2px dashed var(--acc);
+      }
+      .slot {
+        position: relative;
+        min-width: 0;
+      }
+      .edit .slot {
+        cursor: grab;
+      }
+      .edit .slot::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 24px;
+        outline: 2px dashed rgba(199, 148, 120, 0);
+        pointer-events: none;
+        transition: 0.2s;
+      }
+      .edit .slot:hover::after {
+        outline-color: rgba(199, 148, 120, 0.9);
+      }
+      .slot.dragging {
+        opacity: 0.35;
+      }
+      .tools {
+        display: none;
+        position: absolute;
+        top: -12px;
+        left: 14px;
+        z-index: 3;
+        gap: 4px;
+      }
+      .edit .tools {
+        display: flex;
+      }
+      .tools button {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 0;
+        background: #2b211c;
+        color: #fff;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 16px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      }
+      .tools button:hover {
+        background: var(--acc);
+      }
+      .drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(360px, 100%);
+        background: #fffaf5;
+        color: #2b211c;
+        box-shadow: -20px 0 60px rgba(0, 0, 0, 0.4);
+        transform: translateX(105%);
+        transition: transform 0.3s ease;
+        z-index: 50;
+        display: flex;
+        flex-direction: column;
+      }
+      .drawer.open {
+        transform: none;
+      }
+      .drawer header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        border-bottom: 1px solid #eadfd3;
+        font-weight: 700;
+      }
+      .drawer header button {
+        border: 0;
+        background: none;
+        font-size: 22px;
+        cursor: pointer;
+        color: #2b211c;
+      }
+      .drawer .body {
+        padding: 16px 18px;
+        overflow: auto;
+        display: grid;
+        gap: 14px;
+      }
+      .drawer label {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #8f8177;
+      }
+      .drawer input[type="text"],
+      .drawer select {
+        font: inherit;
+        font-size: 14px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid #e2d6c9;
+        background: #fff;
+        color: #2b211c;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      .crow {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .crow input[type="color"] {
+        width: 44px;
+        height: 36px;
+        border: 1px solid #e2d6c9;
+        border-radius: 10px;
+        background: #fff;
+        padding: 2px;
+        cursor: pointer;
+      }
+      .crow span {
+        flex: 1;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: none;
+        letter-spacing: 0;
+        color: #2b211c;
+      }
+      .crow button {
+        border: 0;
+        background: #f1e8de;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .icons {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 6px;
+      }
+      .icons button {
+        aspect-ratio: 1;
+        border: 1px solid #eadfd3;
+        background: #fff;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 20px;
+        color: #5b4a40;
+      }
+      .icons button.on {
+        background: #c79478;
+        color: #fff;
+        border-color: #c79478;
+      }
+      .swatches {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .swatches button {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 1px #e2d6c9;
+        cursor: pointer;
+      }
+      .yaml {
+        font-family: Consolas, monospace;
+        font-size: 12px;
+        background: #2b211c;
+        color: #f4e7dc;
+        border-radius: 12px;
+        padding: 12px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <h1>Engineer Ismail Cards <small>demo with fake devices</small></h1>
+      <div class="seg" id="dev">
+        <button data-d="phone"><i class="mdi mdi-cellphone"></i>Phone</button>
+        <button data-d="pc" class="on"><i class="mdi mdi-monitor"></i>PC</button>
+        <button data-d="tv"><i class="mdi mdi-television"></i>TV</button>
+      </div>
+      <select id="lookAll" title="Page look">
+        <option value="midnight">Midnight Glow</option>
+        <option value="gold">Luxe Gold</option>
+        <option value="amber">Amber Light</option>
+        <option value="mix">Mix (light grey)</option>
+        <option value="mix_dark">Mix (dark grey)</option>
+      </select>
+      <button class="btn" id="editBtn"><i class="mdi mdi-pencil"></i>Edit dashboard</button>
+      <span class="sp"></span>
+      <span class="hint" id="hint">Tap = toggle &middot; hold = details</span>
+    </div>
+    <div class="stage" id="stage">
+      <div class="box" id="box">
+        <div class="frame" id="frame">
+          <div class="screen" id="screen">
+            <div class="hahead"><i class="mdi mdi-menu"></i>Home</div>
+            <div class="view" id="view"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <aside class="drawer" id="drawer">
+      <header><span id="dTitle">Card settings</span><button id="dClose">&times;</button></header>
+      <div class="body" id="dBody"></div>
+    </aside>
+
+    <script>
+      // Simple ha-icon element (Home Assistant provides the real one)
+      const mdiSheet = new CSSStyleSheet();
+      fetch("https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css")
+        .then((r) => r.text())
+        .then((t) => {
+          mdiSheet.replaceSync(t.replace(/@font-face\{[^}]*\}/g, ""));
+        })
+        .catch(() => {});
+      const iconBase = new CSSStyleSheet();
+      iconBase.replaceSync(
+        ":host{display:inline-flex;align-items:center;justify-content:center}i{font-size:var(--mdc-icon-size,24px);line-height:1;display:block}",
+      );
+      customElements.define(
+        "ha-icon",
+        class extends HTMLElement {
+          static get observedAttributes() {
+            return ["icon"];
+          }
+          constructor() {
+            super();
+            this.attachShadow({ mode: "open" });
+            this.shadowRoot.adoptedStyleSheets = [mdiSheet, iconBase];
+          }
+          connectedCallback() {
+            this._r();
+          }
+          attributeChangedCallback() {
+            this._r();
+          }
+          _r() {
+            const n = (this.getAttribute("icon") || "").replace("mdi:", "");
+            this.shadowRoot.innerHTML = '<i class="mdi mdi-' + n + '"></i>';
+          }
+        },
+      );
+    </script>
+    <script src="dist/engineer-ismail-cards.js"></script>
+    <script>
+      // Demo devices
+      const now = () => new Date().toISOString();
+      const S = {};
+      const add = (id, state, attrs, minsAgo) => {
+        S[id] = {
+          entity_id: id,
+          state: String(state),
+          attributes: attrs || {},
+          last_changed: new Date(Date.now() - (minsAgo || 1) * 60000).toISOString(),
+        };
+      };
+      const fn = (n, extra) => Object.assign({ friendly_name: n }, extra || {});
+      add("light.living_room_spot_light", "on", fn("Living Room Spot Light", { brightness: 204 }));
+      add("light.living_room_wall_light", "off", fn("Living Room Wall Light"));
+      add("switch.living_room_chandelier", "on", fn("Living Room Chandelier", { icon: "mdi:chandelier" }));
+      add("switch.living_room_cove_light", "off", fn("Living Room Cove Light", { icon: "mdi:led-strip-variant" }));
+      add("fan.living_room_fan", "off", fn("Living Room Ceiling Fan", { icon: "mdi:ceiling-fan" }));
+      add("cover.living_room_curtain", "closed", fn("Living Room Curtain"));
+      add(
+        "sensor.living_room_temperature",
+        "24.6",
+        fn("Living Room Temperature", { unit_of_measurement: "°C", device_class: "temperature" }),
+      );
+      add(
+        "sensor.living_room_humidity",
+        "52",
+        fn("Living Room Humidity", { unit_of_measurement: "%", device_class: "humidity" }),
+      );
+      add("light.bedroom_spot_light", "off", fn("Bedroom Spot Light"));
+      add("light.bedroom_bed_light", "on", fn("Bedroom Bed Light", { brightness: 90, icon: "mdi:bed" }));
+      add("switch.bedroom_mirror_light", "off", fn("Bedroom Mirror Light", { icon: "mdi:mirror" }));
+      add(
+        "sensor.bedroom_temperature",
+        "23.1",
+        fn("Bedroom Temperature", { unit_of_measurement: "°C", device_class: "temperature" }),
+      );
+      add(
+        "climate.living_room_ac",
+        "cool",
+        fn("Living Room AC", {
+          current_temperature: 24.6,
+          temperature: 23,
+          min_temp: 16,
+          max_temp: 30,
+          target_temp_step: 0.5,
+          hvac_modes: ["off", "cool", "dry", "fan_only", "auto"],
+          fan_modes: ["auto", "low", "medium", "high"],
+          fan_mode: "auto",
+        }),
+      );
+      add("switch.bedroom_ac_switch", "on", fn("Bedroom AC Switch"));
+      add(
+        "sensor.bedroom_ac_power",
+        "1180",
+        fn("Bedroom AC Power", { unit_of_measurement: "W", device_class: "power" }),
+      );
+      ["All Off", "Leave Home", "Movie Time", "Good Night", "Welcome Home"].forEach((n) =>
+        add("scene." + n.toLowerCase().replace(/ /g, "_"), "2026-11-09T08:00:00", fn(n)),
+      );
+      add("binary_sensor.entrance_door", "off", fn("Entrance Door", { device_class: "door" }), 42);
+      add("binary_sensor.back_door", "on", fn("Back Door", { device_class: "door" }), 3);
+      add("binary_sensor.bedroom_window", "off", fn("Bedroom Window", { device_class: "window" }), 300);
+      add("binary_sensor.hall_window", "off", fn("Hall Window", { device_class: "window" }), 95);
+      add("binary_sensor.hall_motion", "on", fn("Hall Motion", { device_class: "motion" }), 0.5);
+      add("binary_sensor.kitchen_motion", "off", fn("Kitchen Motion", { device_class: "motion" }), 12);
+      add("sensor.home_power", "2140", fn("Home Power", { unit_of_measurement: "W", device_class: "power" }));
+      add("sensor.home_voltage", "231.4", fn("Home Voltage", { unit_of_measurement: "V", device_class: "voltage" }));
+      add("sensor.home_current", "9.26", fn("Home Current", { unit_of_measurement: "A", device_class: "current" }));
+      add(
+        "sensor.home_energy",
+        "12.84",
+        fn("Home Energy Today", { unit_of_measurement: "kWh", device_class: "energy" }),
+      );
+
+      add(
+        "media_player.living_room_tv",
+        "playing",
+        fn("Living Room TV", {
+          source: "Netflix",
+          source_list: ["Netflix", "YouTube", "Prime Video", "Disney+", "Spotify", "Live TV"],
+          media_title: "Planet Earth III",
+          media_artist: "Season 1 - Episode 2",
+          volume_level: 0.32,
+          is_volume_muted: false,
+        }),
+      );
+      add("remote.living_room_tv", "on", fn("Living Room TV Remote"));
+      add("weather.home", "sunny", fn("Home", { temperature: 31, humidity: 48 }));
+      add("person.ismail", "home", fn("Ismail"));
+      add("person.guest", "not_home", fn("Guest"));
+
+      let hass;
+      const cards = [];
+      const toastEl = document.getElementById("toast");
+      let toastT;
+      function toast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(() => toastEl.classList.remove("show"), 1400);
+      }
+      const set = (id, state, attrs) => {
+        const o = S[id];
+        if (!o) return;
+        const ch = String(state) !== o.state;
+        S[id] = Object.assign({}, o, {
+          state: String(state),
+          attributes: Object.assign({}, o.attributes, attrs || {}),
+          last_changed: ch ? now() : o.last_changed,
+        });
+      };
+      const ON = ["on", "open", "cool", "heat", "dry", "fan_only", "auto"];
+      function recompute() {
+        const ac = S["switch.bedroom_ac_switch"].state === "on";
+        set("sensor.bedroom_ac_power", ac ? 1180 + Math.round(Math.random() * 60) : 2);
+        let w = 320;
+        Object.values(S).forEach((s) => {
+          if (/^(light|switch)\./.test(s.entity_id) && s.state === "on" && !/ac_switch/.test(s.entity_id)) w += 45;
+        });
+        if (S["climate.living_room_ac"].state !== "off") w += 1350;
+        if (ac) w += 1180;
+        set("sensor.home_power", w + Math.round(Math.random() * 20));
+        set("sensor.home_current", (w / 231).toFixed(2));
+      }
+      function push() {
+        recompute();
+        hass = {
+          states: Object.assign({}, S),
+          callService,
+          user: { name: "Demo" },
+          language: "en",
+          themes: {},
+          config: { unit_system: { temperature: "°C" } },
+          entities: {
+            "media_player.living_room_tv": { platform: "androidtv_remote" },
+            "remote.living_room_tv": { platform: "androidtv_remote" },
+          },
+        };
+        cards.forEach((c) => {
+          c.hass = hass;
+        });
+      }
+      function each(ids, f) {
+        (Array.isArray(ids) ? ids : [ids]).forEach(f);
+      }
+      function callService(d, s, data) {
+        const ids = data.entity_id;
+        if (d === "homeassistant" || ["light", "switch", "fan", "cover"].includes(d)) {
+          each(ids, (id) => {
+            const o = S[id];
+            if (!o) return;
+            const cov = id.startsWith("cover.");
+            const isOn = ON.includes(o.state);
+            const want = s === "toggle" ? !isOn : s === "turn_on";
+            if (id.startsWith("climate.")) {
+              set(id, want ? "cool" : "off");
+              return;
+            }
+            set(
+              id,
+              cov ? (want ? "open" : "closed") : want ? "on" : "off",
+              id.startsWith("light.") && want && !o.attributes.brightness ? { brightness: 230 } : {},
+            );
+          });
+        } else if (d === "climate") {
+          each(ids, (id) => {
+            if (s === "turn_on") set(id, "cool");
+            else if (s === "turn_off") set(id, "off");
+            else if (s === "set_hvac_mode") set(id, data.hvac_mode);
+            else if (s === "set_fan_mode") set(id, S[id].state, { fan_mode: data.fan_mode });
+            else if (s === "set_temperature") {
+              setTimeout(() => {
+                set(id, S[id].state, { temperature: data.temperature });
+                push();
+              }, 1500);
+            }
+          });
+        } else if (d === "remote") {
+          if (s === "send_command") toast("TV remote: " + data.command);
+          if (s === "toggle") set(ids, S[ids].state === "on" ? "off" : "on");
+        } else if (d === "media_player") {
+          const o = S[ids],
+            a = o.attributes;
+          if (s === "volume_up" || s === "volume_down") {
+            const v = Math.max(0, Math.min(1, (a.volume_level || 0) + (s === "volume_up" ? 0.04 : -0.04)));
+            set(ids, o.state, { volume_level: v, is_volume_muted: false });
+            toast("Volume " + Math.round(v * 100));
+          } else if (s === "volume_mute") {
+            set(ids, o.state, { is_volume_muted: data.is_volume_muted });
+            toast(data.is_volume_muted ? "Muted" : "Sound on");
+          } else if (s === "media_play_pause") set(ids, o.state === "playing" ? "paused" : "playing");
+          else if (s === "turn_off") set(ids, "off");
+          else if (s === "turn_on") set(ids, "playing");
+          else if (s === "select_source") {
+            set(ids, "playing", {
+              source: data.source,
+              media_title: data.source === "Live TV" ? "News 24" : "Home screen",
+            });
+            toast("Opening " + data.source);
+          } else toast("TV: " + s.replace(/_/g, " "));
+        } else if (d === "scene") {
+          const id = ids;
+          set(id, now());
+          if (id === "scene.movie_time") {
+            set("light.living_room_spot_light", "off");
+            set("switch.living_room_chandelier", "off");
+            set("switch.living_room_cove_light", "on");
+            set("cover.living_room_curtain", "closed");
+          }
+          if (id === "scene.good_night") {
+            [
+              "light.living_room_spot_light",
+              "light.living_room_wall_light",
+              "switch.living_room_chandelier",
+              "switch.living_room_cove_light",
+              "light.bedroom_spot_light",
+            ].forEach((e) => set(e, "off"));
+            set("light.bedroom_bed_light", "on", { brightness: 40 });
+          }
+          if (id === "scene.welcome_home") {
+            set("light.living_room_spot_light", "on", { brightness: 230 });
+            set("switch.living_room_chandelier", "on");
+            set("cover.living_room_curtain", "open");
+          }
+        }
+        setTimeout(push, 250);
+      }
+      setInterval(push, 5000);
+
+      // Dashboard layout
+      let LAYOUT = [
+        {
+          title: "",
+          full: true,
+          cards: [{ type: "ei-page-card", style: "midnight", banner: true, power: "sensor.home_power" }],
+        },
+        {
+          title: "Living Room",
+          cards: [
+            {
+              type: "ei-room-card",
+              name: "Living Room",
+              icon: "mdi:sofa-outline",
+              temperature: "sensor.living_room_temperature",
+              humidity: "sensor.living_room_humidity",
+              entities: [
+                "light.living_room_spot_light",
+                "light.living_room_wall_light",
+                "switch.living_room_chandelier",
+                "switch.living_room_cove_light",
+                "fan.living_room_fan",
+                "cover.living_room_curtain",
+              ],
+            },
+            { type: "ei-ac-card", name: "Living Room AC", entity: "climate.living_room_ac" },
+          ],
+        },
+        {
+          title: "Bedroom",
+          cards: [
+            {
+              type: "ei-room-card",
+              name: "Bedroom",
+              icon: "mdi:bed-king-outline",
+              temperature: "sensor.bedroom_temperature",
+              entities: ["light.bedroom_spot_light", "light.bedroom_bed_light", "switch.bedroom_mirror_light"],
+            },
+            {
+              type: "ei-ac-card",
+              name: "Bedroom AC",
+              entity: "switch.bedroom_ac_switch",
+              power: "sensor.bedroom_ac_power",
+            },
+            {
+              type: "ei-remote-card",
+              name: "Living Room TV",
+              entity: "media_player.living_room_tv",
+              remote: "remote.living_room_tv",
+            },
+          ],
+        },
+        {
+          title: "Home",
+          cards: [
+            {
+              type: "ei-scenes-card",
+              title: "Scenes",
+              scenes: [
+                "scene.all_off",
+                "scene.leave_home",
+                "scene.movie_time",
+                "scene.good_night",
+                "scene.welcome_home",
+              ],
+              off_scenes: ["scene.all_off", "scene.leave_home"],
+              turn_off: [
+                "light.living_room_spot_light",
+                "light.living_room_wall_light",
+                "switch.living_room_chandelier",
+                "switch.living_room_cove_light",
+                "fan.living_room_fan",
+                "light.bedroom_spot_light",
+                "light.bedroom_bed_light",
+                "switch.bedroom_mirror_light",
+                "switch.bedroom_ac_switch",
+                "climate.living_room_ac",
+              ],
+            },
+            {
+              type: "ei-security-card",
+              title: "Security",
+              entities: [
+                "binary_sensor.entrance_door",
+                "binary_sensor.back_door",
+                "binary_sensor.bedroom_window",
+                "binary_sensor.hall_window",
+                "binary_sensor.hall_motion",
+                "binary_sensor.kitchen_motion",
+              ],
+            },
+            {
+              type: "ei-energy-card",
+              name: "Home Energy",
+              power: "sensor.home_power",
+              voltage: "sensor.home_voltage",
+              current: "sensor.home_current",
+              energy: "sensor.home_energy",
+              max_power: 5000,
+            },
+          ],
+        },
+      ];
+      const DEV = { phone: [390, 844, 1], pc: [1366, 768, 3], tv: [1920, 1080, 4] };
+      let device = "pc",
+        editing = false,
+        dragSrc = null;
+      const view = document.getElementById("view"),
+        frame = document.getElementById("frame"),
+        screenEl = document.getElementById("screen");
+
+      function render() {
+        cards.length = 0;
+        view.innerHTML = "";
+        const colCount = LAYOUT.filter((s) => !s.full).length;
+        view.style.gridTemplateColumns = "repeat(" + Math.min(DEV[device][2], colCount) + ", minmax(0,1fr))";
+        LAYOUT.forEach((sec, si) => {
+          const el = document.createElement("div");
+          el.className = "section" + (sec.full ? " full" : "");
+          el.dataset.s = si;
+          el.innerHTML = sec.title ? "<h2>" + sec.title + "</h2>" : "";
+          sec.cards.forEach((cfg, ci) => {
+            const slot = document.createElement("div");
+            slot.className = "slot";
+            slot.draggable = editing;
+            slot.dataset.s = si;
+            slot.dataset.c = ci;
+            const card = document.createElement(cfg.type);
+            card.setConfig(cfg);
+            if (hass) card.hass = hass;
+            cards.push(card);
+            const cols =
+              (cfg.grid_options && cfg.grid_options.columns) ||
+              (card.getGridOptions ? card.getGridOptions().columns : 12);
+            slot.style.gridColumn = "span " + cols;
+            slot.innerHTML =
+              '<div class="tools"><button title="Half / full width" data-t="w"><i class="mdi mdi-arrow-expand-horizontal"></i></button><button title="Edit look" data-t="e"><i class="mdi mdi-pencil"></i></button></div>';
+            slot.appendChild(card);
+            slot.addEventListener("click", (e) => {
+              const t = e.target.closest("[data-t]");
+              if (!t) return;
+              e.stopPropagation();
+              if (t.dataset.t === "w") {
+                cfg.grid_options = { columns: cols === 12 ? 6 : 12 };
+                render();
+              } else openEditor(si, ci);
+            });
+            slot.addEventListener("dragstart", (e) => {
+              dragSrc = [si, ci];
+              slot.classList.add("dragging");
+              e.dataTransfer.effectAllowed = "move";
+            });
+            slot.addEventListener("dragend", () => {
+              slot.classList.remove("dragging");
+              document.querySelectorAll(".drop").forEach((x) => x.classList.remove("drop"));
+            });
+            slot.addEventListener("dragover", (e) => {
+              if (dragSrc) e.preventDefault();
+            });
+            slot.addEventListener("drop", (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              move(si, ci);
+            });
+            el.appendChild(slot);
+          });
+          el.addEventListener("dragover", (e) => {
+            if (!dragSrc) return;
+            e.preventDefault();
+            el.classList.add("drop");
+          });
+          el.addEventListener("dragleave", () => el.classList.remove("drop"));
+          el.addEventListener("drop", (e) => {
+            e.preventDefault();
+            move(si, LAYOUT[si].cards.length);
+          });
+          view.appendChild(el);
+        });
+        fit();
+      }
+      function move(ts, tc) {
+        if (!dragSrc) return;
+        const [fs, fc] = dragSrc;
+        dragSrc = null;
+        const [c] = LAYOUT[fs].cards.splice(fc, 1);
+        if (fs === ts && fc < tc) tc--;
+        LAYOUT[ts].cards.splice(tc, 0, c);
+        render();
+      }
+      function fit() {
+        const [w, h] = DEV[device];
+        frame.className = "frame " + device;
+        frame.style.width = w + "px";
+        frame.style.height = h + "px";
+        const stage = document.getElementById("stage");
+        const bw = 0;
+        const sc = Math.min(
+          1,
+          (stage.clientWidth - 36) / (w + bw),
+          device === "phone" ? 1 : (stage.clientHeight - 36) / (h + bw),
+        );
+        const box = document.getElementById("box");
+        box.style.width = (w + bw) * sc + "px";
+        box.style.height = (h + bw) * sc + "px";
+        frame.style.transform = "scale(" + sc.toFixed(4) + ")";
+      }
+      document.getElementById("dev").addEventListener("click", (e) => {
+        const b = e.target.closest("button");
+        if (!b) return;
+        device = b.dataset.d;
+        screenEl.scrollTop = 0;
+        document.querySelectorAll("#dev button").forEach((x) => x.classList.toggle("on", x === b));
+        render();
+      });
+      document.getElementById("lookAll").addEventListener("change", (e) => {
+        const v = e.target.value;
+        const MIX = {
+          "ei-room-card": ["midnight", "gold"],
+          "ei-ac-card": ["amber", "amber"],
+          "ei-scenes-card": ["midnight"],
+          "ei-security-card": ["gold"],
+          "ei-energy-card": ["amber"],
+          "ei-remote-card": ["midnight"],
+        };
+        const seen = {};
+        LAYOUT.forEach((s) =>
+          s.cards.forEach((c) => {
+            if (c.type === "ei-page-card") c.style = v;
+            else if (v.startsWith("mix")) {
+              const list = MIX[c.type] || ["midnight"];
+              seen[c.type] = (seen[c.type] || 0) + 1;
+              c.style = list[(seen[c.type] - 1) % list.length];
+            } else delete c.style;
+          }),
+        );
+        render();
+      });
+      document.getElementById("editBtn").addEventListener("click", (e) => {
+        editing = !editing;
+        e.currentTarget.classList.toggle("on", editing);
+        view.classList.toggle("edit", editing);
+        document.getElementById("hint").textContent = editing
+          ? "Drag cards to move · ↔ width · pencil = colours"
+          : "Tap = toggle · hold = details";
+        render();
+      });
+      window.addEventListener("resize", fit);
+      document.addEventListener("hass-more-info", (e) =>
+        alert("In Home Assistant this opens the details popup for:\n" + e.detail.entityId),
+      );
+
+      // Card settings panel
+      const ICONS = [
+        "mdi:sofa-outline",
+        "mdi:bed-king-outline",
+        "mdi:silverware-fork-knife",
+        "mdi:shower",
+        "mdi:desk",
+        "mdi:human-child",
+        "mdi:stairs",
+        "mdi:door",
+        "mdi:air-conditioner",
+        "mdi:snowflake",
+        "mdi:palette-outline",
+        "mdi:shield-home-outline",
+        "mdi:lightning-bolt",
+        "mdi:home-outline",
+        "mdi:television",
+        "mdi:tree-outline",
+      ];
+      const SW = [
+        "#c79478",
+        "#d0645a",
+        "#5f9b78",
+        "#6a968e",
+        "#7c8a99",
+        "#4f7cc4",
+        "#8a6bbf",
+        "#e0a43a",
+        "#2b211c",
+        "#ffffff",
+      ];
+      function openEditor(si, ci) {
+        const cfg = LAYOUT[si].cards[ci];
+        if (cfg.type === "ei-page-card") {
+          const body = document.getElementById("dBody");
+          document.getElementById("dTitle").textContent = "Page style · settings";
+          body.innerHTML =
+            '<label>Page look<select id="pStyle">' +
+            [
+              ["midnight", "Midnight Glow"],
+              ["gold", "Luxe Gold"],
+              ["amber", "Amber Light"],
+              ["mix", "Mix (light grey)"],
+              ["mix_dark", "Mix (dark grey)"],
+            ]
+              .map(
+                (o) =>
+                  '<option value="' + o[0] + '"' + (cfg.style === o[0] ? " selected" : "") + ">" + o[1] + "</option>",
+              )
+              .join("") +
+            '</select></label><label>Banner title<input type="text" id="pTitle" value="' +
+            (cfg.title || "").replace(/"/g, "&quot;") +
+            '" placeholder="Good morning / evening"></label>';
+          body.onchange = (e) => {
+            if (e.target.id === "pStyle") {
+              const s = document.getElementById("lookAll");
+              s.value = e.target.value;
+              s.dispatchEvent(new Event("change"));
+            }
+          };
+          body.oninput = (e) => {
+            if (e.target.id === "pTitle") {
+              cfg.title = e.target.value;
+              render();
+            }
+          };
+          body.onclick = null;
+          document.getElementById("drawer").classList.add("open");
+          return;
+        }
+        const key = cfg.title != null ? "title" : "name";
+        const lbl = {
+          "ei-room-card": "Light on colour",
+          "ei-ac-card": "Running colour",
+          "ei-scenes-card": "Tap flash colour",
+          "ei-security-card": "Alert colour",
+          "ei-energy-card": "Dial colour",
+          "ei-remote-card": "Button colour",
+        }[cfg.type];
+        const body = document.getElementById("dBody");
+        document.getElementById("dTitle").textContent = (cfg[key] || "Card") + " · settings";
+        const crow = (k, label) =>
+          "<label>" +
+          label +
+          '<div class="crow"><input type="color" data-c="' +
+          k +
+          '" value="' +
+          (cfg[k] || "#c79478") +
+          '"><span>' +
+          (cfg[k] || "Default") +
+          '</span><button data-clr="' +
+          k +
+          '">Default</button></div>' +
+          '<div class="swatches">' +
+          SW.map((c) => '<button data-sw="' + k + '" data-v="' + c + '" style="background:' + c + '"></button>').join(
+            "",
+          ) +
+          "</div></label>";
+        body.innerHTML =
+          "<label>" +
+          (key === "title" ? "Title" : "Name") +
+          '<input type="text" id="fName" value="' +
+          (cfg[key] || "").replace(/"/g, "&quot;") +
+          '"></label>' +
+          '<label>Icon<div class="icons">' +
+          ICONS.map(
+            (i) =>
+              '<button data-i="' +
+              i +
+              '" class="' +
+              (cfg.icon === i ? "on" : "") +
+              '"><i class="mdi ' +
+              i.replace(":", "-") +
+              '"></i></button>',
+          ).join("") +
+          "</div></label>" +
+          '<label>Look<select id="fStyle">' +
+          [
+            ["midnight", "Midnight Glow"],
+            ["gold", "Luxe Gold"],
+            ["amber", "Amber Light"],
+            ["theme", "Follow my HA theme"],
+          ]
+            .map(
+              (o) =>
+                '<option value="' +
+                o[0] +
+                '"' +
+                ((cfg.style || "midnight") === o[0] ? " selected" : "") +
+                ">" +
+                o[1] +
+                "</option>",
+            )
+            .join("") +
+          "</select></label>" +
+          crow("background", "Background") +
+          crow("icon_color", "Icon colour") +
+          crow("on_color", lbl) +
+          crow("text_color", "Text colour") +
+          '<label>YAML (what HA saves)<pre class="yaml" id="yaml"></pre></label>';
+        const apply = () => {
+          document.getElementById("yaml").textContent = toYaml(cfg);
+          render();
+        };
+        body.oninput = (e) => {
+          if (e.target.id === "fName") {
+            cfg[key] = e.target.value;
+            apply();
+          }
+          if (e.target.dataset.c) {
+            cfg[e.target.dataset.c] = e.target.value;
+            e.target.nextElementSibling.textContent = e.target.value;
+            apply();
+          }
+        };
+        body.onchange = (e) => {
+          if (e.target.id === "fStyle") {
+            cfg.style = e.target.value;
+            apply();
+          }
+        };
+        body.onclick = (e) => {
+          const b = e.target.closest("button");
+          if (!b) return;
+          e.preventDefault();
+          if (b.dataset.i) {
+            cfg.icon = b.dataset.i;
+            body.querySelectorAll("[data-i]").forEach((x) => x.classList.toggle("on", x === b));
+          }
+          if (b.dataset.clr) {
+            delete cfg[b.dataset.clr];
+            b.previousElementSibling.textContent = "Default";
+          }
+          if (b.dataset.sw) {
+            cfg[b.dataset.sw] = b.dataset.v;
+            const inp = body.querySelector('[data-c="' + b.dataset.sw + '"]');
+            inp.value = b.dataset.v;
+            inp.nextElementSibling.textContent = b.dataset.v;
+          }
+          apply();
+        };
+        document.getElementById("yaml").textContent = toYaml(cfg);
+        document.getElementById("drawer").classList.add("open");
+      }
+      function toYaml(o) {
+        return Object.entries(o)
+          .map(([k, v]) =>
+            Array.isArray(v)
+              ? k + ":\n" + v.map((x) => "  - " + x).join("\n")
+              : v && typeof v === "object"
+                ? k +
+                  ":\n" +
+                  Object.entries(v)
+                    .map(([a, b]) => "  " + a + ": " + b)
+                    .join("\n")
+                : k + ": " + (/^#/.test(v) ? '"' + v + '"' : v),
+          )
+          .join("\n");
+      }
+      document.getElementById("dClose").onclick = () => document.getElementById("drawer").classList.remove("open");
+
+      const Q = new URLSearchParams(location.search);
+      if (Q.get("bare")) document.querySelector(".bar").style.display = "none";
+      if (Q.get("device") && DEV[Q.get("device")]) {
+        device = Q.get("device");
+        document.querySelectorAll("#dev button").forEach((x) => x.classList.toggle("on", x.dataset.d === device));
+      }
+      push();
+      render();
+      if (Q.get("focus")) {
+        const f = document.querySelector(Q.get("focus"));
+        if (f) f.scrollIntoView({ block: "start" });
+      }
+      if (Q.get("look")) {
+        const s = document.getElementById("lookAll");
+        s.value = Q.get("look");
+        s.dispatchEvent(new Event("change"));
+      }
+    </script>
+  </body>
+</html>

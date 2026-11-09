@@ -1,0 +1,96 @@
+# Engineer Ismail Cards - ready-made dashboard
+#
+# 1. Settings > Dashboards > Add dashboard > New dashboard from scratch.
+# 2. Open it, click the pencil, then the three dots > Raw configuration editor.
+# 3. Delete everything, paste this file, click Save.
+# 4. Open each card and pick your own devices (the IDs below are examples).
+
+views:
+  - title: Home
+    path: home
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        column_span: 3
+        cards:
+          - type: custom:ei-page-card
+            style: midnight
+            banner: true
+            power: sensor.home_power
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Living Room
+          - type: custom:ei-room-card
+            name: Living Room
+            icon: mdi:sofa-outline
+            temperature: sensor.living_room_temperature
+            humidity: sensor.living_room_humidity
+            entities:
+              - light.living_room_spot_light
+              - light.living_room_wall_light
+              - switch.living_room_chandelier
+              - switch.living_room_cove_light
+              - fan.living_room_fan
+              - cover.living_room_curtain
+          - type: custom:ei-ac-card
+            name: Living Room AC
+            entity: climate.living_room_ac
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Bedroom
+          - type: custom:ei-room-card
+            name: Bedroom
+            icon: mdi:bed-king-outline
+            temperature: sensor.bedroom_temperature
+            entities:
+              - light.bedroom_spot_light
+              - light.bedroom_bed_light
+              - switch.bedroom_mirror_light
+          - type: custom:ei-ac-card
+            name: Bedroom AC
+            entity: switch.bedroom_ac
+            power: sensor.bedroom_ac_power
+          - type: custom:ei-remote-card
+            name: Living Room TV
+            entity: media_player.living_room_tv
+            remote: remote.living_room_tv
+            platform: auto
+
+      - type: grid
+        cards:
+          - type: heading
+            heading: Home
+          - type: custom:ei-scenes-card
+            title: Scenes
+            scenes:
+              - scene.all_off
+              - scene.leave_home
+              - scene.movie_time
+              - scene.good_night
+              - scene.welcome_home
+            off_scenes:
+              - scene.all_off
+              - scene.leave_home
+            turn_off:
+              - light.living_room_spot_light
+              - light.bedroom_spot_light
+              - switch.bedroom_ac
+          - type: custom:ei-security-card
+            title: Security
+            entities:
+              - binary_sensor.entrance_door
+              - binary_sensor.back_door
+              - binary_sensor.hall_window
+              - binary_sensor.hall_motion
+          - type: custom:ei-energy-card
+            name: Home Energy
+            power: sensor.home_power
+            voltage: sensor.home_voltage
+            current: sensor.home_current
+            energy: sensor.home_energy_today
+            max_power: 5000
